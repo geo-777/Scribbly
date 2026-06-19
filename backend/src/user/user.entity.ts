@@ -27,17 +27,10 @@ export class User {
   @Column({
     type: 'varchar',
     length: 200,
-    nullable: true,
+    nullable: false,
   })
   @Exclude()
-  password?: string;
-
-  @Column({
-    type: 'varchar',
-    nullable: true,
-  })
-  @Exclude()
-  googleId?: string;
+  password!: string;
 
   @CreateDateColumn()
   createdAt!: Date;
