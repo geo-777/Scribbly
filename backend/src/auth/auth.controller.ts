@@ -3,14 +3,12 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './providers/auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import type { Response } from 'express';
-import {
-  ACCESS_TOKEN_COOKIE_OPTIONS,
-  REFRESH_TOKEN_COOKIE_OPTIONS,
-} from './constants/auth.constants';
 import { ActiveUser } from './decorators/active-user.decorator';
 import type { ActiveUserData } from './interfaces/active-user.interface';
 import { PublicRoute } from './decorators/public-route.decorator';
 import { ApiCookieAuth } from '@nestjs/swagger';
+import { setAuthCookies } from './helpers/set-auth-cookies';
+import { clearAuthCookies } from './helpers/clear-auth-cookies';
 
 @Controller('auth')
 export class AuthController {
@@ -32,20 +30,17 @@ export class AuthController {
   ) {
     //fetching tokens
     const result = await this.authService.login(dto);
-
     //setting up cookies
-    response.cookie(
-      'accessToken',
-      result.accessToken,
-      ACCESS_TOKEN_COOKIE_OPTIONS,
-    );
-    response.cookie(
-      'refreshToken',
-      result.refreshToken,
-      REFRESH_TOKEN_COOKIE_OPTIONS,
-    );
-
+    setAuthCookies(response, result);
     return { message: 'Login successful' };
+  }
+
+  /* ----------------------------- Logout endpoint ---------------------------- */
+  @Post('logout')
+  @HttpCode(200)
+  public logoutRoute(@Res({ passthrough: true }) response: Response) {
+    clearAuthCookies(response);
+    return { message: 'Logout successful' };
   }
 
   /* ------------------------------- Me endpoint ------------------------------ */
