@@ -1,8 +1,16 @@
-import { Body, Controller, Get, HttpCode, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './providers/auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { ActiveUser } from './decorators/active-user.decorator';
 import type { ActiveUserData } from './interfaces/active-user.interface';
 import { PublicRoute } from './decorators/public-route.decorator';
@@ -43,6 +51,18 @@ export class AuthController {
     return { message: 'Logout successful' };
   }
 
+  /* ------------------------- Refresh token endpoint ------------------------- */
+  @PublicRoute()
+  @Post('refresh')
+  @HttpCode(200)
+  public async refreshRoute(
+    @Res({ passthrough: true }) response: Response,
+    @Req() req: Request,
+  ) {
+    const result = await this.authService.refreshToken(req);
+    setAuthCookies(response, result);
+    return { message: 'Refresh successful' };
+  }
   /* ------------------------------- Me endpoint ------------------------------ */
   @Get('me')
   @ApiCookieAuth('accessToken')
