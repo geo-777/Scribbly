@@ -8,6 +8,7 @@ import { CreateUserDto } from '../../user/dto/create-user.dto';
 import { HashingProvider } from './hashing.provider';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { GenerateTokensProvider } from './generate-tokens.provider';
+import { ActiveUserData } from '../interfaces/active-user.interface';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,7 @@ export class AuthService {
     // This helps prevent user enumeration attacks.
     const errorMessage = 'Email or password incorrect';
 
-    const user = await this.userService.findUserByEmail(dto.email);
+    const user = await this.userService.findOneUserByEmail(dto.email);
 
     if (!user) throw new UnauthorizedException(errorMessage);
     let isEqual: boolean = false;
@@ -46,5 +47,9 @@ export class AuthService {
       throw new UnauthorizedException(errorMessage);
     }
     return await this.generateTokensProvider.generateTokens(user);
+  }
+
+  public async meRouteDetailsFetcher(user: ActiveUserData) {
+    return await this.userService.findOneUserById(user.sub);
   }
 }

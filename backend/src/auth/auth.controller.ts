@@ -52,6 +52,6 @@ export class AuthController {
   @Get('me')
   @ApiCookieAuth('accessToken')
   public meRoute(@ActiveUser() user: ActiveUserData) {
-    console.log('Islogged in', user);
+    return this.authService.meRouteDetailsFetcher(user);
   }
 }

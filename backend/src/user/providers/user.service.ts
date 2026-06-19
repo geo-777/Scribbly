@@ -16,7 +16,10 @@ export class UserService {
     await this.createUserProvider.createUser(dto);
     return { message: 'User registeration successful' };
   }
-  public findUserByEmail(email: string) {
+  public findOneUserByEmail(email: string) {
     return this.userRepo.findOne({ where: { email } });
+  }
+  public findOneUserById(id: number) {
+    return this.userRepo.findOne({ where: { id } });
   }
 }
