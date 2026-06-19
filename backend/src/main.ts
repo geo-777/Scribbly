@@ -2,19 +2,29 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  //dto based validation pipes
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
     }),
   );
+  app.use(cookieParser()); //enabling cookie parsing stuff
+
+  //cors
+  app.enableCors({
+    origin: ['http://localhost:5173', 'https://scribbly.vercel.app'],
+    credentials: true,
+  });
+  //swagger ui bs
   const config = new DocumentBuilder()
     .setTitle('Scribbly')
     .setDescription('Notes application')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addCookieAuth('accessToken')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
