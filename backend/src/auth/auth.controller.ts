@@ -14,7 +14,7 @@ import type { Request, Response } from 'express';
 import { ActiveUser } from './decorators/active-user.decorator';
 import type { ActiveUserData } from './interfaces/active-user.interface';
 import { PublicRoute } from './decorators/public-route.decorator';
-import { ApiCookieAuth } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOkResponse } from '@nestjs/swagger';
 import { setAuthCookies } from './helpers/set-auth-cookies';
 import { clearAuthCookies } from './helpers/clear-auth-cookies';
 
@@ -23,6 +23,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
   /* ---------------------------- Register endpoint --------------------------- */
   @PublicRoute()
+  @ApiOkResponse({
+    example: { message: 'Register successful' },
+  })
   @Post('register')
   public registerRoute(@Body() dto: CreateUserDto) {
     return this.authService.register(dto);
@@ -32,6 +35,7 @@ export class AuthController {
   @PublicRoute()
   @Post('login')
   @HttpCode(200)
+  @ApiOkResponse({ example: { message: 'Login successful' } })
   public async loginRoute(
     @Body() dto: LoginUserDto,
     @Res({ passthrough: true }) response: Response,
@@ -45,6 +49,7 @@ export class AuthController {
 
   /* ----------------------------- Logout endpoint ---------------------------- */
   @Post('logout')
+  @ApiOkResponse({ example: { message: 'Logout successful' } })
   @HttpCode(200)
   public logoutRoute(@Res({ passthrough: true }) response: Response) {
     clearAuthCookies(response);
@@ -53,6 +58,7 @@ export class AuthController {
 
   /* ------------------------- Refresh token endpoint ------------------------- */
   @PublicRoute()
+  @ApiOkResponse({ example: { message: 'Refresh successful' } })
   @Post('refresh')
   @HttpCode(200)
   public async refreshRoute(
@@ -66,6 +72,14 @@ export class AuthController {
   /* ------------------------------- Me endpoint ------------------------------ */
   @Get('me')
   @ApiCookieAuth('accessToken')
+  @ApiOkResponse({
+    example: {
+      id: 1,
+      username: 'username',
+      email: 'user@gmail.com',
+      createdAt: '2026-06-18T12:12:13.190Z',
+    },
+  })
   public meRoute(@ActiveUser() user: ActiveUserData) {
     return this.authService.meRouteDetailsFetcher(user);
   }
