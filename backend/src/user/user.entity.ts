@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Tag } from '../tags/tag.entity';
+import { Note } from '../notes/note.entity';
 
 @Entity('users')
 export class User {
@@ -39,4 +40,7 @@ export class User {
 
   @OneToMany(() => Tag, (tag) => tag.user)
   tags!: Tag[];
+
+  @OneToMany(() => Note, (note) => note.user)
+  notes!: Note[];
 }

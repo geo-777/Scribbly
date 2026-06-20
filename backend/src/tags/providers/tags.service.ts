@@ -6,7 +6,7 @@ import {
 import { CreateTagDTO } from '../dtos/create-tag.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from '../tag.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { type ActiveUserData } from '../../auth/interfaces/active-user.interface';
 import { UserService } from '../../user/providers/user.service';
 import { User } from '../../user/user.entity';
@@ -107,5 +107,15 @@ export class TagsService {
     }
     Object.assign(tag, dto);
     return await this.tagsRepo.save(tag);
+  }
+
+  /* ------------------------- fetching array of tags ------------------------- */
+  public async findTagsByIds(tags: number[] | [], id: number) {
+    return await this.tagsRepo.find({
+      where: {
+        user: { id },
+        id: In(tags),
+      },
+    });
   }
 }

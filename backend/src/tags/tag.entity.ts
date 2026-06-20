@@ -6,9 +6,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   Unique,
+  ManyToMany,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Exclude } from 'class-transformer';
+import { Note } from '../notes/note.entity';
 
 //this means that a user can have a tag with unique name only
 //user b tag_name and user a tag_name can exist
@@ -35,4 +37,8 @@ export class Tag {
   })
   @Exclude()
   user!: User;
+
+  @ManyToMany(() => Note, (note) => note.tags)
+  @Exclude()
+  notes!: Note[];
 }
