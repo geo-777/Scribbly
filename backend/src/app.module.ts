@@ -7,6 +7,7 @@ import { NotesModule } from './notes/notes.module';
 import { TagsModule } from './tags/tags.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TrashModule } from './trash/trash.module';
 
 import databaseConfig from './config/db.config';
 
@@ -35,6 +36,7 @@ import databaseConfig from './config/db.config';
         database: configService.get('database.name'),
       }),
     }),
+    TrashModule,
   ],
   controllers: [AppController],
   providers: [AppService],
