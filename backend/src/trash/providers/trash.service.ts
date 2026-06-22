@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { type ActiveUserData } from '../../auth/interfaces/active-user.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Note } from '../../notes/note.entity';
@@ -19,5 +19,50 @@ export class TrashService {
         deletedAt: Not(IsNull()),
       },
     });
+  }
+
+  public async restoreTrash(id: number | null, user: ActiveUserData) {
+    if (id !== null) {
+      const result = await this.noteRepo.restore({
+        id,
+        user: {
+          id: user.sub,
+        },
+      });
+      if (result.affected === 0) {
+        throw new NotFoundException('Note not found');
+      }
+    } else {
+      await this.noteRepo.restore({
+        user: {
+          id: user.sub,
+        },
+      });
+    }
+    return { message: 'Restored successfully' };
+  }
+
+  public async clearTrash(id: number | null, user: ActiveUserData) {
+    if (id !== null) {
+      const result = await this.noteRepo.delete({
+        id,
+        user: {
+          id: user.sub,
+        },
+        deletedAt: Not(IsNull()),
+      });
+
+      if (result.affected === 0) {
+        throw new NotFoundException('Trashed note not found');
+      }
+    } else {
+      await this.noteRepo.delete({
+        user: {
+          id: user.sub,
+        },
+        deletedAt: Not(IsNull()),
+      });
+    }
+    return { message: 'Cleared successfully' };
   }
 }
