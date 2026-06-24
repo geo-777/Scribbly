@@ -17,12 +17,19 @@ import { PublicRoute } from './decorators/public-route.decorator';
 import { ApiCookieAuth, ApiOkResponse } from '@nestjs/swagger';
 import { setAuthCookies } from './helpers/set-auth-cookies';
 import { clearAuthCookies } from './helpers/clear-auth-cookies';
+import {
+  LOGIN_LIMITS,
+  REFRESH_LIMITS,
+  REGISTER_LIMITS,
+} from './constants/rate-limit-constants';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   /* ---------------------------- Register endpoint --------------------------- */
   @PublicRoute()
+  @Throttle({ default: REGISTER_LIMITS })
   @ApiOkResponse({
     example: { message: 'Register successful' },
   })
@@ -33,6 +40,7 @@ export class AuthController {
 
   /* ----------------------------- Login Endpoint ----------------------------- */
   @PublicRoute()
+  @Throttle({ default: LOGIN_LIMITS })
   @Post('login')
   @HttpCode(200)
   @ApiOkResponse({ example: { message: 'Login successful' } })
@@ -58,6 +66,7 @@ export class AuthController {
 
   /* ------------------------- Refresh token endpoint ------------------------- */
   @PublicRoute()
+  @Throttle({ default: REFRESH_LIMITS })
   @ApiOkResponse({ example: { message: 'Refresh successful' } })
   @Post('refresh')
   @HttpCode(200)
