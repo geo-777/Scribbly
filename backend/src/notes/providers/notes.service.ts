@@ -98,7 +98,7 @@ export class NotesService {
   ) {
     const exists = await this.noteRepo.findOne({
       where: { user: { id: activeUser.sub }, id },
-      relations: ['tags'],
+      relations: { tags: true },
     });
     if (!exists) throw new NotFoundException('Note not found');
 

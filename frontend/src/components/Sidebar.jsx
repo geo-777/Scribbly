@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -12,8 +11,6 @@ import {
   Trash2,
   Tag,
   LogOut,
-  Settings,
-  ChevronRight,
   X,
 } from 'lucide-react';
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { marked } from 'marked';
 import {
   X,
@@ -8,7 +8,6 @@ import {
   ArchiveRestore,
   Trash2,
   Globe,
-  Share2,
   Copy,
   Check,
   Download,
@@ -17,7 +16,6 @@ import {
   Eye,
   Columns2,
   FileEdit,
-  Sparkles,
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { api } from '../api/client';

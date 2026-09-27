@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { Search, LayoutGrid, List, SlidersHorizontal, Menu, X } from 'lucide-react';
+import { useRef, useEffect } from 'react';
+import { Search, LayoutGrid, List, Menu, X } from 'lucide-react';
 
 export default function Header({
   title,

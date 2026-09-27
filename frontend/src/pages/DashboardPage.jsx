@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
@@ -8,7 +8,7 @@ import TagModal from '../components/TagModal';
 import TrashView from '../components/TrashView';
 import { api } from '../api/client';
 import { useToast } from '../context/ToastContext';
-import { Plus, BookOpen, Search, Sparkles, Filter, Pin, Star, Archive } from 'lucide-react';
+import { Plus, BookOpen, Search } from 'lucide-react';
 
 export default function DashboardPage() {
   const location = useLocation();
@@ -37,8 +37,8 @@ export default function DashboardPage() {
     try {
       const data = await api.tags.list();
       setTags(data || []);
-    } catch (err) {
-      console.error('Error fetching tags:', err);
+    } catch (_err) {
+      // ignore
     }
   }, []);
 
@@ -101,6 +101,19 @@ export default function DashboardPage() {
     fetchNotes();
   }, [fetchNotes]);
 
+  // Note actions
+  const handleNewNote = useCallback(() => {
+    setActiveEditingNote({
+      title: '',
+      content: '',
+      tags: currentTag ? tags.filter((t) => t.name === currentTag) : [],
+      isPinned: currentFilter === 'pinned',
+      isFavourite: currentFilter === 'favourite',
+      isArchived: currentFilter === 'archived',
+      isPublic: false,
+    });
+  }, [currentTag, tags, currentFilter]);
+
   // Global keyboard shortcuts (Cmd+N for new note)
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -111,20 +124,7 @@ export default function DashboardPage() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  // Note actions
-  const handleNewNote = () => {
-    setActiveEditingNote({
-      title: '',
-      content: '',
-      tags: currentTag ? tags.filter((t) => t.name === currentTag) : [],
-      isPinned: currentFilter === 'pinned',
-      isFavourite: currentFilter === 'favourite',
-      isArchived: currentFilter === 'archived',
-      isPublic: false,
-    });
-  };
+  }, [handleNewNote]);
 
   const handleSelectNote = (note) => {
     setActiveEditingNote(note);
@@ -138,7 +138,7 @@ export default function DashboardPage() {
     );
     try {
       await api.notes.update(note.id, { isPinned: nextVal });
-    } catch (err) {
+    } catch (_err) {
       toast.error('Failed to update pin');
       fetchNotes();
     }
@@ -152,7 +152,7 @@ export default function DashboardPage() {
     );
     try {
       await api.notes.update(note.id, { isFavourite: nextVal, isFavorite: nextVal });
-    } catch (err) {
+    } catch (_err) {
       toast.error('Failed to update favorite');
       fetchNotes();
     }
@@ -165,7 +165,7 @@ export default function DashboardPage() {
     try {
       await api.notes.update(note.id, { isArchived: nextVal });
       toast.info(nextVal ? 'Note moved to archive' : 'Note restored');
-    } catch (err) {
+    } catch (_err) {
       toast.error('Failed to archive note');
       fetchNotes();
     }
@@ -178,7 +178,7 @@ export default function DashboardPage() {
     try {
       await api.notes.delete(note.id);
       toast.info(`Moved "${note.title}" to trash`);
-    } catch (err) {
+    } catch (_err) {
       toast.error('Failed to delete note');
       fetchNotes();
       fetchTrashCount();

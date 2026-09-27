@@ -1,5 +1,4 @@
-import React from 'react';
-import { Pin, Star, Archive, ArchiveRestore, Trash2, Globe, Tag, Clock } from 'lucide-react';
+import { Pin, Star, Archive, ArchiveRestore, Trash2, Globe } from 'lucide-react';
 
 export default function NoteCard({
   note,

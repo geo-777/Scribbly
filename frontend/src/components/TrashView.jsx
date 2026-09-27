@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { api } from '../api/client';
 import { useToast } from '../context/ToastContext';
-import { Trash2, RotateCcw, AlertTriangle, Calendar, ShieldAlert } from 'lucide-react';
+import { Trash2, RotateCcw, AlertTriangle, Calendar } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function TrashView({ onTrashUpdated }) {
@@ -10,7 +10,7 @@ export default function TrashView({ onTrashUpdated }) {
   const [loading, setLoading] = useState(true);
   const [operatingId, setOperatingId] = useState(null);
 
-  const fetchTrash = async () => {
+  const fetchTrash = useCallback(async () => {
     try {
       setLoading(true);
       const data = await api.trash.list();
@@ -21,11 +21,11 @@ export default function TrashView({ onTrashUpdated }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [onTrashUpdated, toast]);
 
   useEffect(() => {
     fetchTrash();
-  }, []);
+  }, [fetchTrash]);
 
   const handleRestoreOne = async (id, title) => {
     try {

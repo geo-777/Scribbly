@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Tag, Plus, Edit2, Trash2 } from 'lucide-react';
 import { api } from '../api/client';
 import { useToast } from '../context/ToastContext';
