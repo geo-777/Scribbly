@@ -62,7 +62,7 @@ export default function NoteEditor({
       setIsPublic(!!note.isPublic);
       setSaveStatus('saved');
     }
-  }, [note?.id]);
+  }, [note]);
 
   // Handle escape key to close editor
   useEffect(() => {
@@ -164,7 +164,7 @@ export default function NoteEditor({
         clearTimeout(autoSaveTimerRef.current);
       }
     };
-  }, [title, content, selectedTagIds, isPinned, isFavourite, isArchived, isPublic]);
+  }, [title, content, selectedTagIds, isPinned, isFavourite, isArchived, isPublic, isNew, saveNote]);
 
   // Quick toggle handlers that save immediately
   const handleTogglePin = () => {

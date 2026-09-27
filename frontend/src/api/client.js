@@ -35,12 +35,12 @@ async function request(endpoint, options = {}) {
   let response;
   try {
     response = await fetch(url, config);
-  } catch (err) {
+  } catch (_err) {
     throw new ApiError('Unable to connect to the Scribbly server. Please ensure the backend is running.', 0, null);
   }
 
   // Parse response
-  let data = null;
+  let data;
   const contentType = response.headers.get('content-type');
   if (contentType && contentType.includes('application/json')) {
     try {

@@ -37,7 +37,7 @@ export default function Sidebar({
       await logout();
       toast.info('Signed out of Scribbly');
       navigate('/login');
-    } catch (err) {
+    } catch (_err) {
       toast.error('Logout error');
     }
   };
