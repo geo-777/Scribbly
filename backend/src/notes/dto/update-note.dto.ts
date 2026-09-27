@@ -33,4 +33,17 @@ export class UpdateNoteDto {
   @IsOptional()
   @IsBoolean()
   isFavorite?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  isFavourite?: boolean;
+
+  @ApiPropertyOptional({
+    type: [Number],
+    description: 'Array of tag ids',
+    example: [1, 2],
+  })
+  @IsOptional()
+  tags?: number[];
 }

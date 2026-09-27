@@ -98,15 +98,31 @@ export class NotesService {
   ) {
     const exists = await this.noteRepo.findOne({
       where: { user: { id: activeUser.sub }, id },
+      relations: ['tags'],
     });
     if (!exists) throw new NotFoundException('Note not found');
+
+    if (dto.isFavorite !== undefined && dto.isFavourite === undefined) {
+      dto.isFavourite = dto.isFavorite;
+    }
+    delete dto.isFavorite;
+
+    let tagsUpdated = false;
+    if (dto.tags !== undefined) {
+      exists.tags = await this.tagsService.findTagsByIds(
+        dto.tags,
+        activeUser.sub,
+      );
+      delete dto.tags;
+      tagsUpdated = true;
+    }
 
     const updatesMade = Object.fromEntries(
       Object.entries(dto).filter(
         ([key, value]) => value !== undefined && value !== exists[key],
       ),
     );
-    if (Object.keys(updatesMade).length === 0) {
+    if (!tagsUpdated && Object.keys(updatesMade).length === 0) {
       throw new BadRequestException('Nothing to edit');
     }
 
